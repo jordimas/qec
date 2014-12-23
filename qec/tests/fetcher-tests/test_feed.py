@@ -24,8 +24,7 @@ from fetcher.feed import Feed
 
 class TestFeed(unittest.TestCase):
 
-    test_rss = ur"""
-<?xml version="1.0" encoding="UTF-8" ?>
+    test_rss = u"""<?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0">
 
 <channel>
