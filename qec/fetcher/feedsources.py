@@ -18,33 +18,29 @@
 # Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 # Boston, MA 02111-1307, USA.
 
-import os
 import logging
-from feed import Feed
-from feedsources import FeedSources
+import yaml
 
-def init_logging():
-    logfile = 'fetcher.log'
 
-    if os.path.isfile(logfile):
-        os.remove(logfile)
+class FeedSources(object):
 
-    logging.basicConfig(filename=logfile, level=logging.DEBUG)
-    logger = logging.getLogger('')
-    console = logging.StreamHandler()
-    console.setLevel(logging.INFO)
-    logger.addHandler(console)
+    def __init__(self):
+        self._urls = []
 
-if __name__ == '__main__':
+    @property
+    def urls(self):
+        return self._urls
 
-    init_logging()
+    def read(self, filename):
+        self._urls = []
+        with open(filename, 'r') as f:
+            self._read_str(f)
 
-    feedsources = FeedSources()
-    feedsources.read('feeds.yml')
-
-    for url in feedsources.urls:
-        feed = Feed()
-        feed.parse(url)
-        entries = feed.entries
-        for entry in entries:
-            print (entry)
+    def _read_str(self, string):
+        doc = yaml.load(string)
+        feeds = doc["feeds"]
+        for feed in feeds:
+            url = feed["url"]
+            msg = 'Feed url {0}'.format(url)
+            logging.debug(msg)
+            self._urls.append(url)

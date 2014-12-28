@@ -49,8 +49,6 @@ class TestFeed(unittest.TestCase):
 
         feed = Feed()
         feed.parse(self.test_rss)
-        print (feed.entries)
-
         entry1 = feed.entries[0]
         entry2 = feed.entries[1]
 

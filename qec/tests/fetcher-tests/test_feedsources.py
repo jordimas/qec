@@ -18,33 +18,25 @@
 # Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 # Boston, MA 02111-1307, USA.
 
-import os
-import logging
-from feed import Feed
-from feedsources import FeedSources
+import unittest
+from fetcher.feedsources import FeedSources
 
-def init_logging():
-    logfile = 'fetcher.log'
 
-    if os.path.isfile(logfile):
-        os.remove(logfile)
+class TestFeedSources(unittest.TestCase):
 
-    logging.basicConfig(filename=logfile, level=logging.DEBUG)
-    logger = logging.getLogger('')
-    console = logging.StreamHandler()
-    console.setLevel(logging.INFO)
-    logger.addHandler(console)
+    test_yaml = u"""
+feeds:
+    - url: http://www.vilaweb.cat/rss/vilaweb.rss
+    - url: http://www.elperiodico.cat/ca/rss/rss_portada.xml
+"""
+
+    def test_read_fields(self):
+
+        feed_sources = FeedSources()
+        feed_sources._read_str(self.test_yaml)
+        urls = feed_sources.urls
+
+        self.assertEquals(urls[0], 'http://www.vilaweb.cat/rss/vilaweb.rss')
 
 if __name__ == '__main__':
-
-    init_logging()
-
-    feedsources = FeedSources()
-    feedsources.read('feeds.yml')
-
-    for url in feedsources.urls:
-        feed = Feed()
-        feed.parse(url)
-        entries = feed.entries
-        for entry in entries:
-            print (entry)
+    unittest.main()
